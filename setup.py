@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'AIS_3DOF'
+package_name = 'ais_3dof'
 
 setup(
     name=package_name,
