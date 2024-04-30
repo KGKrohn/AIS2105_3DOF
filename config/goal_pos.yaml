@@ -1,0 +1,20 @@
+publisher_joint_trajectory_controller:
+  ros__parameters:
+
+    controller_name: "joint_trajectory_controller"
+    wait_sec_between_publish: 6
+
+    goal_names: ["pos1", "pos2", "pos3", "pos4"]
+    pos1:
+      positions: [20, 40, 80]
+    pos2:
+      positions: [0, 50, 100]
+    pos3:
+      positions: [0, 50, 50]
+    pos4:
+      positions: [50, 50, 0]
+
+    joints:
+      - ard_motorA
+      - ard_motorB
+      - ard_motorC

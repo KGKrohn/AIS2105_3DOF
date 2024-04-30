@@ -7,10 +7,10 @@ from std_msgs.msg import Float64
 class MinimalSubscriber(Node):
 
     def __init__(self):
-        super().__init__('ServoAnglePlublish')
+        super().__init__('/joint_states')
         self.subscription = self.create_subscription(
             Float64,
-            'MotorA',
+            'position',
             self.listener_callback,
             10)
         self.subscription  # prevent unused variable warning

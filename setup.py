@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
                 'talker = ais2105_3dof.pub_servo_angle:main',
+                'follow = ais2105_3dof.follow:main',
                 'listener = ais2105_3dof.sub_camera:main',
         ],
     },
