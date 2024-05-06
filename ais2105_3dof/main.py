@@ -51,7 +51,6 @@ class ComputeNode(Node):
 
 def main ():
     rclpy.init(args=None)
-    
     ComputeNode_ = ComputeNode()
     rclpy.spin(ComputeNode_)
     

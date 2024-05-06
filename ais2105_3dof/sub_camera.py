@@ -7,7 +7,7 @@ from std_msgs.msg import Float64
 class MinimalSubscriber(Node):
 
     def __init__(self):
-        super().__init__('/joint_states')
+        super().__init__('sub_cam_node')
         self.subscription = self.create_subscription(
             Float64,
             'position',
