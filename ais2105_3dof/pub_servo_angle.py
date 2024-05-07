@@ -1,7 +1,6 @@
 import rclpy
-import numpy as np
 from rclpy.node import Node
-from std_msgs.msg import Float64
+from std_msgs.msg import Float32MultiArray
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 
 class ServoAnglePlublish(Node):
@@ -12,28 +11,33 @@ class ServoAnglePlublish(Node):
         self.joint_trajectory_msg = JointTrajectory()
         self.joint_trajectory_msg.joint_names = ['ard_motorA', 'ard_motorB', 'ard_motorC']
         #Initialize sub
+        self.subscription = self.create_subscription(
+            Float32MultiArray,
+            'servo_angles',
+            self.servo_angle_callback,
+            10)
+        self.servo_A = 10.0
+        self.servo_B = 10.0
+        self.servo_C = 10.0
+
         
-        self.subscription_A = self.create_subscription(Float64, 'servo_angle_A', self.listener_callback_A, 10)
-        self.subscription_B = self.create_subscription(Float64, 'servo_angle_B', self.listener_callback_B, 10)
-        self.subscription_C = self.create_subscription(Float64, 'servo_angle_C', self.listener_callback_C, 10)
+    def servo_angle_callback(self, msg):
+        #if len(msg.data) != 2:
+        #    self.get_logger().warn("Received invalid message. Expected 2 values, received %d", len(msg.data))
+        #    return
 
-
-        self.message_A = 10
-        self.message_B = 10
-        self.message_C = 10
-
-        timer_period = 0.1  # dt
-        self.timer = self.create_timer(timer_period, self.timer_callback)
-        self.i = 0
-
-    def timer_callback(self):
         joint_trajectory_point = JointTrajectoryPoint()
         #print("sub",self.message_A.data," ",self.message_B.data ," ", self.message_C.data)
+        #print("sub")
+        self.servo_A,self.servo_B, self.servo_C = msg.data
+
 
         # Write servo angle A B and C as a JTPos
-        joint_trajectory_point.positions= [self.message_A,
-                                           self.message_B,
-                                           self.message_C] 
+        joint_trajectory_point.positions= [self.servo_A+80.5,
+                                           self.servo_B+80.5,
+                                           self.servo_C+80.5]
+        
+        self.get_logger().info('yepp %f' % self.servo_A)
     
         # Write JTPos as JTPoint
         self.joint_trajectory_msg.points = [joint_trajectory_point]
@@ -41,12 +45,6 @@ class ServoAnglePlublish(Node):
         # Publish
         self.publisher_.publish(self.joint_trajectory_msg)
     
-    def listener_callback_A(self, msg):
-        self.message_A = msg.data
-    def listener_callback_B(self, msg):
-        self.message_B = msg.data
-    def listener_callback_C(self, msg):
-        self.message_C = msg.data
 
 def main(args=None):
     rclpy.init(args=None)
