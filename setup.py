@@ -26,7 +26,6 @@ setup(
         'console_scripts': [
                 'talker = ais2105_3dof.pub_servo_angle:main',
                 'compute = ais2105_3dof.main:main',
-                'listener = ais2105_3dof.sub_camera:main',
                 'kin_calc = 3dof_kin.kin_calc:main',
                 'test_prg = 3dof_kin.kin_test:main',
         ],
