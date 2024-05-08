@@ -16,7 +16,7 @@ class KinematicsTester(Node):
         self.get_logger().info('Received servo angles: %s' % msg.data)
 
     def generate_pitch_roll(self):
-        frequency = 0.5  # Frequency of the sine wave in Hz
+        frequency = 0.1  # Frequency of the sine wave in Hz
         amplitude = 15  # Amplitude of the sine wave in degrees
 
         while rclpy.ok():
@@ -26,7 +26,7 @@ class KinematicsTester(Node):
             pitch_roll_values = [pitch, roll]
             msg = Float32MultiArray(data=pitch_roll_values)
             self.publisher_.publish(msg)
-            self.get_logger().info('Publishing pitch and roll values: %s' % msg.data)
+            #self.get_logger().info('Publishing pitch and roll values: %s' % msg.data)
             time.sleep(0.01) 
 
 def main(args=None):

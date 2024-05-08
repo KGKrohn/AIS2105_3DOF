@@ -23,6 +23,7 @@ class IKNode(Node):
             return
 
         pitch, roll = msg.data
+        print("YOOOO")
 
         transformed_values = self.perform_transformation(pitch, roll)
 
