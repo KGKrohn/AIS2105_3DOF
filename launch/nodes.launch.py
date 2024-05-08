@@ -6,37 +6,30 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     ls = LaunchDescription()
-    #position_goals = PathJoinSubstitution(
-    #    [FindPackageShare("ais_3dof"), "config", "goal_pos.yaml"])
-   
-    #listenerNode = Node(
-    #            package="ais_3dof",
-    #            executable="listener",
-    #            #name="listen_camera_node",
-    #        )
-    computeNode = Node(
-                package="ais_3dof",
-                executable="compute",
-                #name="talker_node",
-            )
-   
+
+    pid_controller = Node(
+        package="ais_3dof",
+        executable="pid",
+        name="PID_node",
+    )
     kinNode = Node(
         package="ais_3dof",
         executable="kin_calc",
+        name="Kinematic_node",
     )
     kin_testNode = Node(
         package="ais_3dof",
         executable="test_prg",
+        name="Test_kin_node",
     )
     talkerNode = Node(
-                package="ais_3dof",
-                executable="talker",
-                #name="talker_node",
-            )
-    #ls.add_action(listenerNode)
-    #ls.add_action(computeNode)
+        package="ais_3dof",
+        executable="talker",
+        name="pub_to_arduino_node",
+    )
+    ls.add_action(pid_controller)
     ls.add_action(kinNode)
-    ls.add_action(kin_testNode)
+    #ls.add_action(kin_testNode)
     ls.add_action(talkerNode)
     return ls
         
