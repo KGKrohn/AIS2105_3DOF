@@ -29,6 +29,9 @@ setup(
                 'kin_calc = 3dof_kin.kin_calc:main',
                 'test_prg = 3dof_kin.kin_test:main',
                 'pid = controller.pid_controller:main',
+                'ball_tracking = 3dof_camera.balltracking:main',
+                'visualiser = 3dof_camera.visualiser:main',
+                'convert_to_centi = 3dof_camera.image_plane_calc:main',
         ],
     },
 )
