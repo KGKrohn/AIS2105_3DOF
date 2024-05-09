@@ -22,22 +22,20 @@ class ServoAnglePlublish(Node):
 
         
     def servo_angle_callback(self, msg):
-        #if len(msg.data) != 2:
-        #    self.get_logger().warn("Received invalid message. Expected 2 values, received %d", len(msg.data))
-        #    return
-
         joint_trajectory_point = JointTrajectoryPoint()
-        #print("sub",self.message_A.data," ",self.message_B.data ," ", self.message_C.data)
-        #print("sub")
         self.servo_A,self.servo_B, self.servo_C = msg.data
 
 
+
         # Write servo angle A B and C as a JTPos
-        joint_trajectory_point.positions= [self.servo_A+80.5,
-                                           self.servo_B+80.5,
-                                           self.servo_C+80.5]
+        joint_trajectory_point.positions= [self.servo_A+70,
+                                           self.servo_B+70,
+                                           self.servo_C+70]
+    
         
-        self.get_logger().info('yepp %f' % self.servo_A)
+        self.get_logger().info('pub_servo %f' % self.servo_A)
+        self.get_logger().info('pub_servo %f' % self.servo_B)
+        self.get_logger().info('pub_servo %f' % self.servo_C)
     
         # Write JTPos as JTPoint
         self.joint_trajectory_msg.points = [joint_trajectory_point]

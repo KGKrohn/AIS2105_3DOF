@@ -8,7 +8,7 @@ class IKNode(Node):
     def __init__(self):
         super().__init__('IK_node')
         self.declare_parameter('L', 20.0)
-        self.declare_parameter('yaw_offset', 20.0)
+        self.declare_parameter('yaw_offset', 60.0)
         self.declare_parameter('servo_arm_length', 5.0)
         self.subscription = self.create_subscription(
             Float32MultiArray,
@@ -23,11 +23,11 @@ class IKNode(Node):
             return
 
         pitch, roll = msg.data
-        print("YOOOO")
 
         transformed_values = self.perform_transformation(pitch, roll)
 
         servo_angles = self.calculate_servo_angles(transformed_values)
+
         
         servo_msg = Float32MultiArray(data=servo_angles)
         self.publisher_.publish(servo_msg)
@@ -83,11 +83,13 @@ class IKNode(Node):
 
         r = self.get_parameter('servo_arm_length').value
 
-        servo1 = np.rad2deg(np.arcsin(transformed_values[0]/r))
-        servo2 = np.rad2deg(np.arcsin(transformed_values[1]/r))
-        servo3 = np.rad2deg(np.arcsin(transformed_values[2]/r))
 
-        servo_angles = servo1, servo2, servo3
+        servo1 = np.rad2deg(np.arcsin(np.clip(transformed_values[0],a_max=3.536,a_min=-3.536)/r))
+        servo2 = np.rad2deg(np.arcsin(np.clip(transformed_values[1],a_max=3.536,a_min=-3.536)/r))
+        servo3 = np.rad2deg(np.arcsin(np.clip(transformed_values[2],a_max=3.536,a_min=-3.536)/r))
+
+
+        servo_angles =servo2, servo3, servo1
 
         return servo_angles
 

@@ -24,7 +24,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-                'talker = ais2105_3dof.pub_servo_angle:main',
+                'pub_servo_ang = ais2105_3dof.pub_servo_angle:main',
                 'compute = ais2105_3dof.main:main',
                 'kin_calc = 3dof_kin.kin_calc:main',
                 'test_prg = 3dof_kin.kin_test:main',

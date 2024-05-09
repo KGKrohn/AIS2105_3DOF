@@ -7,6 +7,21 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     ls = LaunchDescription()
 
+    ball_tracking = Node(
+        package="ais_3dof",
+        executable="ball_tracking",
+        name="Ball_Track_node",
+    )
+    Pixel_to_word = Node(
+        package="ais_3dof",
+        executable="convert_to_centi",
+        name="Pixel_to_world",
+    )
+    vizualiser = Node(
+        package="ais_3dof",
+        executable="visualiser",
+        name="visualize_ball_pos",
+    )
     pid_controller = Node(
         package="ais_3dof",
         executable="pid",
@@ -22,15 +37,17 @@ def generate_launch_description():
         executable="test_prg",
         name="Test_kin_node",
     )
-    talkerNode = Node(
+    Servo_angles = Node(
         package="ais_3dof",
-        executable="talker",
+        executable="pub_servo_ang",
         name="pub_to_arduino_node",
     )
+    ls.add_action(ball_tracking)
+    ls.add_action(Pixel_to_word)
     ls.add_action(pid_controller)
     ls.add_action(kinNode)
     #ls.add_action(kin_testNode)
-    ls.add_action(talkerNode)
+    ls.add_action(Servo_angles)
     return ls
         
     

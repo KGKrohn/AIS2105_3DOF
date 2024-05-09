@@ -32,7 +32,7 @@ class pidControllerNode(Node):
         #Initialize sub
         self.subscription = self.create_subscription(
             Float32MultiArray,
-            'Ball_pos',
+            'ball_dist_cm',
             self.sub_callback,
             10)
         self.add_on_set_parameters_callback(self.parameter_callback)
@@ -45,21 +45,25 @@ class pidControllerNode(Node):
         pid_y = self.compute(self.y_pos)
      
         pid_output = pid_x, pid_y
+        #self.get_logger().info('PID x: %f' % pid_output[0])
+        #self.get_logger().info('PID y: %f' % pid_output[1])
         pub_msg = Float32MultiArray(data=pid_output)
         self.publisher_.publish(pub_msg)
 
 
     def compute(self, systemValue):
-        dt = time.time() - self.start_time
+        dt = 0.03
         error = self.setpoint - systemValue
         self.IntegralError += error * dt
-        #self.IntegralError = np.clip(self.IntegralError, a_min=-5, a_max=5)  # integral windup
+        self.IntegralError = np.clip(self.IntegralError, a_min=-5, a_max=5)  # integral windup
         self.DerivativeError = (error - self.lastError) / dt
 
         output = (-self.Kp * error) + (-self.Ki * self.IntegralError) + (-self.Kd * self.DerivativeError)
 
         self.lastError = error
         self.start_time = time.time()
+
+        
 
         return output
     
