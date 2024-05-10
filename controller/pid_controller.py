@@ -9,9 +9,9 @@ from rcl_interfaces.msg import SetParametersResult
 class pidControllerNode(Node):
     def __init__(self):
         super().__init__('PID_Node')
-        self.declare_parameter('kp',0.39)
-        self.declare_parameter('ki',0.62)
-        self.declare_parameter('kd',0.32)
+        self.declare_parameter('kp',0.02)
+        self.declare_parameter('ki',0.02)
+        self.declare_parameter('kd',0.02)
         self.declare_parameter('setpoint',0.0)
         self.Kp = self.get_parameter('kp').value
         self.Ki = self.get_parameter('ki').value
@@ -45,8 +45,8 @@ class pidControllerNode(Node):
         pid_y = self.compute(self.y_pos)
 
         pid_output = pid_x, pid_y
-        #self.get_logger().info('PID x: %f' % pid_output[0])
-        #self.get_logger().info('PID y: %f' % pid_output[1])
+        self.get_logger().info('PID x: %f' % pid_output[0])
+        self.get_logger().info('PID y: %f' % pid_output[1])
         pub_msg = Float32MultiArray(data=pid_output)
         self.publisher_.publish(pub_msg)
 

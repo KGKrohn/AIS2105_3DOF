@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<robot name="simple_robot">
+
+<link name="base_link">
+    <visual>
+      <geometry>
+        <box size="1 1 0.1"/>  <!-- Adjust size as needed -->
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>  
+      </material>
+    </visual>
+  </link>
+
+  <!-- Column link -->
+  <link name="column_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.02" length="1"/>  <!-- Adjust size as needed -->
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>  <!-- RGBA values for blue -->
+      </material>
+    </visual>
+  </link>
+
+  <!-- Plate link -->
+  <link name="plate_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.5" length="0.02"/>  <!-- Adjust size as needed -->
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>  
+      </material>
+    </visual>
+  </link>
+
+  <!-- Ball link -->
+  <link name="ball_link">
+    <visual>
+      <geometry>
+        <sphere radius="0.02"/>  <!-- Adjust size as needed -->
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>  <!-- RGBA values for blue -->
+      </material>
+    </visual>
+  </link>
+
+  <link name="point_link">
+
+  </link>
+
+  <!-- Joints -->
+  <!-- Fixed joint between base and column -->
+  <joint name="base_to_column" type="fixed">
+    <parent link="base_link"/>
+    <child link="column_link"/>
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>  <!-- Adjust as needed -->
+  </joint>
+
+  <!-- Revolute joint for plate to rotate -->
+  <joint name="column_to_point" type="revolute">
+    <parent link="column_link"/>
+    <child link="point_link"/>
+    <origin xyz="0 0 0.5" rpy="0 0 0"/>  <!-- Adjust as needed -->
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.8" upper="0.8" effort="10" velocity="1"/>
+  </joint>
+
+  <joint name="point_to_plate" type="revolute">
+    <parent link="point_link"/>
+    <child link="plate_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>  <!-- Adjust as needed -->
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.14" upper="3.14" effort="10" velocity="1"/>
+  </joint>
+
+  <!-- Floating joint for the ball -->
+  <joint name="plate_to_ball" type="fixed">
+    <parent link="plate_link"/>
+    <child link="ball_link"/>
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>  <!-- Adjust as needed -->
+  </joint>
+</robot>

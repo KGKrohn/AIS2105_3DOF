@@ -54,6 +54,7 @@ def generate_launch_description():
         executable="pub_servo_ang",
         name="pub_to_arduino_node",
     )
+    ls.add_action(other_file)
     ls.add_action(ball_tracking)
     ls.add_action(Pixel_to_word)
     ls.add_action(pid_controller)
