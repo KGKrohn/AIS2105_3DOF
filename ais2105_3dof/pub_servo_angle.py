@@ -26,16 +26,16 @@ class ServoAnglePlublish(Node):
         self.servo_A,self.servo_B, self.servo_C = msg.data
 
 
-
+        self.get_logger().info('pub_servo1 %f' % self.servo_A)
+        self.get_logger().info('pub_servo2 %f' % self.servo_B)
+        self.get_logger().info('pub_servo3 %f' % self.servo_C)
         # Write servo angle A B and C as a JTPos
-        joint_trajectory_point.positions= [self.servo_A+70,
-                                           self.servo_B+70,
-                                           self.servo_C+70]
+        joint_trajectory_point.positions= [self.servo_A+100,
+                                           self.servo_B+100,
+                                           self.servo_C+100]
     
         
-        self.get_logger().info('pub_servo %f' % self.servo_A)
-        self.get_logger().info('pub_servo %f' % self.servo_B)
-        self.get_logger().info('pub_servo %f' % self.servo_C)
+        
     
         # Write JTPos as JTPoint
         self.joint_trajectory_msg.points = [joint_trajectory_point]

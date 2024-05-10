@@ -92,7 +92,7 @@ class IKNode(Node):
         servo3 = np.rad2deg(np.arcsin(np.clip(transformed_values[2],-5,5)/r))
 
         # Clip all servo angles between -45 and 45 since this is the working area of our servos
-        servo_angles = np.clip(servo1,-45, 45), np.clip(servo2,-45, 45), np.clip(servo3,-45, 45)
+        servo_angles = np.clip(servo2,-45, 45), np.clip(servo3,-45, 45), np.clip(servo1,-45, 45)
 
         return servo_angles
 
