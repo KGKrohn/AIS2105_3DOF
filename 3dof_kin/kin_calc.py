@@ -8,7 +8,7 @@ class IKNode(Node):
     def __init__(self):
         super().__init__('IK_node')
         self.declare_parameter('L', 20.0)
-        self.declare_parameter('yaw_offset', 60.0)
+        self.declare_parameter('yaw_offset', 20.0)
         self.declare_parameter('servo_arm_length', 5.0)
         self.subscription = self.create_subscription(
             Float32MultiArray,
@@ -24,10 +24,9 @@ class IKNode(Node):
 
         pitch, roll = msg.data
 
-        transformed_values = self.perform_transformation(pitch, roll)
+        transformed_values = self.perform_transformation(pitch, roll, 0)
 
         servo_angles = self.calculate_servo_angles(transformed_values)
-
         
         servo_msg = Float32MultiArray(data=servo_angles)
         self.publisher_.publish(servo_msg)
@@ -59,23 +58,28 @@ class IKNode(Node):
         return z_rot @ y_rot @ x_rot
 
 
-    def perform_transformation(self, pitch, roll):
+    def perform_transformation(self, pitch, roll, height):
 
         L = self.get_parameter('L').value
         yaw_offset = self.get_parameter('yaw_offset').value
-        z = 0
+        z = height
 
-        P1_translation = np.array([[L/2], [L/(2*np.sqrt(3))], [z]])
-        P2_translation = np.array([[-L/2], [L/(2*np.sqrt(3))], [z]])
-        P3_translation = np.array([[0], [-L/np.sqrt(3)], [z]])
+        P1 = np.array([[L/2], [L/(2*np.sqrt(3))], [0], [1]])
+        P2 = np.array([[-L/2], [L/(2*np.sqrt(3))], [0], [1]])
+        P3 = np.array([[0], [-L/np.sqrt(3)], [0], [1]])
 
         rotation_matrix = self.rotation_matrix(roll, pitch, yaw_offset)
+        translation_vector = np.array([0, 0, z])
 
-        P1 = rotation_matrix @ P1_translation
-        P2 = rotation_matrix @ P2_translation
-        P3 = rotation_matrix @ P3_translation
+        transformation_matrix = np.eye(4)
+        transformation_matrix[:3, :3] = rotation_matrix 
+        transformation_matrix[:3, 3] = translation_vector
 
-        transformed_values = P1[2,0], P2[2,0], P3[2,0]
+        P1_new = transformation_matrix @ P1
+        P2_new = transformation_matrix @ P2
+        P3_new = transformation_matrix @ P3
+
+        transformed_values = P1_new[2,0], P2_new[2,0], P3_new[2,0]
 
         return transformed_values
 
@@ -83,13 +87,12 @@ class IKNode(Node):
 
         r = self.get_parameter('servo_arm_length').value
 
+        servo1 = np.rad2deg(np.arcsin(np.clip(transformed_values[0],-5,5)/r))
+        servo2 = np.rad2deg(np.arcsin(np.clip(transformed_values[1],-5,5)/r))
+        servo3 = np.rad2deg(np.arcsin(np.clip(transformed_values[2],-5,5)/r))
 
-        servo1 = np.rad2deg(np.arcsin(np.clip(transformed_values[0],a_max=3.536,a_min=-3.536)/r))
-        servo2 = np.rad2deg(np.arcsin(np.clip(transformed_values[1],a_max=3.536,a_min=-3.536)/r))
-        servo3 = np.rad2deg(np.arcsin(np.clip(transformed_values[2],a_max=3.536,a_min=-3.536)/r))
-
-
-        servo_angles =servo2, servo3, servo1
+        # Clip all servo angles between -45 and 45 since this is the working area of our servos
+        servo_angles = np.clip(servo1,-45, 45), np.clip(servo2,-45, 45), np.clip(servo3,-45, 45)
 
         return servo_angles
 
