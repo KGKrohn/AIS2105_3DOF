@@ -43,7 +43,7 @@ class pidControllerNode(Node):
 
         pid_x = self.compute(self.x_pos)
         pid_y = self.compute(self.y_pos)
-     
+
         pid_output = pid_x, pid_y
         #self.get_logger().info('PID x: %f' % pid_output[0])
         #self.get_logger().info('PID y: %f' % pid_output[1])

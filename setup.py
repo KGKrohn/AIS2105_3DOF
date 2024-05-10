@@ -25,7 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
                 'pub_servo_ang = ais2105_3dof.pub_servo_angle:main',
-                'compute = ais2105_3dof.main:main',
+                'sim = simulation.Sim_3dof:main',
                 'kin_calc = 3dof_kin.kin_calc:main',
                 'test_prg = 3dof_kin.kin_test:main',
                 'pid = controller.pid_controller:main',
