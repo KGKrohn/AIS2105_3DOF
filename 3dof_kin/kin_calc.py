@@ -7,9 +7,9 @@ from std_msgs.msg import Float32MultiArray
 class IKNode(Node):
     def __init__(self):
         super().__init__('IK_node')
-        self.declare_parameter('L', 20.0)
-        self.declare_parameter('yaw_offset', 20.0)
-        self.declare_parameter('servo_arm_length', 5.0)
+        self.declare_parameter('L', 19.0)
+        self.declare_parameter('yaw_offset', 22.0)
+        self.declare_parameter('servo_arm_length', 4.0)
         self.subscription = self.create_subscription(
             Float32MultiArray,
             'PID_PR',
@@ -24,7 +24,9 @@ class IKNode(Node):
 
         pitch, roll = msg.data
 
-        transformed_values = self.perform_transformation(pitch, roll, 0)
+        yaw_offset = self.get_parameter('yaw_offset').value
+
+        transformed_values = self.perform_transformation(pitch, roll, yaw_offset, 0)
 
         servo_angles = self.calculate_servo_angles(transformed_values)
         
@@ -58,10 +60,9 @@ class IKNode(Node):
         return z_rot @ y_rot @ x_rot
 
 
-    def perform_transformation(self, pitch, roll, height):
+    def perform_transformation(self, pitch, roll, yaw_offset, height):
 
         L = self.get_parameter('L').value
-        yaw_offset = self.get_parameter('yaw_offset').value
         z = height
 
         P1 = np.array([[L/2], [L/(2*np.sqrt(3))], [0], [1]])

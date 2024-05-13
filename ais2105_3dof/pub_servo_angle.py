@@ -28,9 +28,9 @@ class ServoAnglePlublish(Node):
 
         
         # Write servo angle A B and C as a JTPos
-        joint_trajectory_point.positions= [self.servo_A+100,
-                                           self.servo_B+100,
-                                           self.servo_C+100]
+        joint_trajectory_point.positions= [self.servo_A+90,
+                                           self.servo_B+90,
+                                           self.servo_C+90]
     
         
         

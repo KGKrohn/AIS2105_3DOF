@@ -17,12 +17,16 @@ def generate_launch_description():
                         'launch/display.launch.py')
         )
     )
-    
 
     ball_tracking = Node(
         package="ais_3dof",
         executable="ball_tracking",
         name="Ball_Track_node",
+    )
+    Vizu_ball_path = Node(
+        package="ais_3dof",
+        executable="visualiser",
+        name="Visual_Ball_Path",
     )
     Pixel_to_word = Node(
         package="ais_3dof",
@@ -56,6 +60,7 @@ def generate_launch_description():
     )
     ls.add_action(other_file)
     ls.add_action(ball_tracking)
+    ls.add_action(Vizu_ball_path)
     ls.add_action(Pixel_to_word)
     ls.add_action(pid_controller)
     ls.add_action(kinNode)

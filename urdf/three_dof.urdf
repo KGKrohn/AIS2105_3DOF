@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <robot name="simple_robot">
 
-<link name="base_link">
+  <!-- Base link -->
+  <link name="base_link">
     <visual>
       <geometry>
-        <box size="1 1 0.1"/>  <!-- Adjust size as needed -->
+        <box size="0.5 0.5 0.1"/>  
       </geometry>
       <material name="black">
         <color rgba="0 0 0 1"/>  
@@ -16,10 +17,10 @@
   <link name="column_link">
     <visual>
       <geometry>
-        <cylinder radius="0.02" length="1"/>  <!-- Adjust size as needed -->
+        <cylinder radius="0.02" length="0.5"/>  
       </geometry>
       <material name="white">
-        <color rgba="1 1 1 1"/>  <!-- RGBA values for blue -->
+        <color rgba="1 1 1 1"/>  
       </material>
     </visual>
   </link>
@@ -28,28 +29,44 @@
   <link name="plate_link">
     <visual>
       <geometry>
-        <cylinder radius="0.5" length="0.02"/>  <!-- Adjust size as needed -->
+        <cylinder radius="0.35" length="0.02"/> 
       </geometry>
       <material name="black">
         <color rgba="0 0 0 1"/>  
       </material>
     </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.35" length="0.02"/> 
+      </geometry>
+    </collision>
   </link>
 
   <!-- Ball link -->
   <link name="ball_link">
     <visual>
       <geometry>
-        <sphere radius="0.02"/>  <!-- Adjust size as needed -->
+        <sphere radius="0.02"/>  
       </geometry>
       <material name="white">
-        <color rgba="1 1 1 1"/>  <!-- RGBA values for blue -->
+        <color rgba="1 1 1 1"/>  
       </material>
     </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.02"/>  
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
   </link>
 
   <link name="point_link">
+  </link>
 
+  <link name="ballpoint_link">
   </link>
 
   <!-- Joints -->
@@ -57,30 +74,41 @@
   <joint name="base_to_column" type="fixed">
     <parent link="base_link"/>
     <child link="column_link"/>
-    <origin xyz="0 0 0.05" rpy="0 0 0"/>  <!-- Adjust as needed -->
+    <origin xyz="0 0 0.25" rpy="0 0 0"/> 
   </joint>
 
   <!-- Revolute joint for plate to rotate -->
-  <joint name="column_to_point" type="revolute">
+  <joint name="pitch" type="revolute">
     <parent link="column_link"/>
     <child link="point_link"/>
-    <origin xyz="0 0 0.5" rpy="0 0 0"/>  <!-- Adjust as needed -->
+    <origin xyz="0 0 0.25" rpy="0 0 0"/>  
     <axis xyz="1 0 0"/>
     <limit lower="-0.8" upper="0.8" effort="10" velocity="1"/>
   </joint>
 
-  <joint name="point_to_plate" type="revolute">
+  <joint name="roll" type="revolute">
     <parent link="point_link"/>
     <child link="plate_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>  <!-- Adjust as needed -->
+    <origin xyz="0 0 0" rpy="0 0 0"/>  
     <axis xyz="0 1 0"/>
-    <limit lower="-3.14" upper="3.14" effort="10" velocity="1"/>
+    <limit lower="-0.8" upper="0.8" effort="10" velocity="1"/>
   </joint>
 
-  <!-- Floating joint for the ball -->
-  <joint name="plate_to_ball" type="fixed">
+  <!-- Prismatic joint for the ball -->
+  <joint name="ballx" type="prismatic">
     <parent link="plate_link"/>
-    <child link="ball_link"/>
-    <origin xyz="0 0 0.1" rpy="0 0 0"/>  <!-- Adjust as needed -->
+    <child link="ballpoint_link"/>
+    <origin xyz="0 0 0.02" rpy="0 0 0"/> 
+    <axis xyz="1 0 0"/> 
+    <limit effort="1000.0" lower="-0.35" upper="0.35" velocity="0.5"/>
   </joint>
+
+  <joint name="bally" type="prismatic">
+    <parent link="ballpoint_link"/>
+    <child link="ball_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/> 
+    <axis xyz="0 1 0"/>  
+    <limit effort="1000.0" lower="-0.35" upper="0.35" velocity="0.5"/>
+  </joint>
+
 </robot>
