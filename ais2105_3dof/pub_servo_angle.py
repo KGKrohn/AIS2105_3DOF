@@ -6,16 +6,17 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 class ServoAnglePlublish(Node):
     def __init__(self):
         super().__init__('Pub_joint')
-        #Initialize pub
-        self.publisher_ = self.create_publisher(JointTrajectory, '/joint_trajectory_controller/joint_trajectory', 0)
+
+        self.publisher_ = self.create_publisher(JointTrajectory,
+                                                '/joint_trajectory_controller/joint_trajectory',
+                                                0)
         self.joint_trajectory_msg = JointTrajectory()
         self.joint_trajectory_msg.joint_names = ['ard_motorA', 'ard_motorB', 'ard_motorC']
-        #Initialize sub
-        self.subscription = self.create_subscription(
-            Float32MultiArray,
-            'servo_angles',
-            self.servo_angle_callback,
-            10)
+
+        self.subscription = self.create_subscription(Float32MultiArray,
+                                                    'servo_angles',
+                                                    self.servo_angle_callback,
+                                                    10)
         self.servo_A = 10.0
         self.servo_B = 10.0
         self.servo_C = 10.0

@@ -8,13 +8,14 @@ import numpy as np
 from rclpy.parameter import Parameter
 from rcl_interfaces.msg import SetParametersResult
 
+## PID code inspired by https://github.com/KGKrohn/3-Dof_Regtek 
 class pidControllerNode(Node):
     def __init__(self):
         super().__init__('PID_Node')
-        self.declare_parameter('kp',0.3)#0.45)
-        self.declare_parameter('ki',0.08)#0.14)
-        self.declare_parameter('kd',0.14)#0.18)
-        self.declare_parameter('setpoint',0.0)
+        self.declare_parameter('kp', 0.45)
+        self.declare_parameter('ki', 0.14)
+        self.declare_parameter('kd', 0.18)
+        self.declare_parameter('setpoint', 0.0)
         self.Kp = self.get_parameter('kp').value
         self.Ki = self.get_parameter('ki').value
         self.Kd = self.get_parameter('kd').value
@@ -55,12 +56,12 @@ class pidControllerNode(Node):
     def sub_callback(self, msg):
         self.x_pos, self.y_pos = msg.data
 
-        self.joint_state.name =['pitch','roll','ballx','bally']
+        self.joint_state.name =['pitch', 'roll', 'ballx', 'bally']
         self.joint_state.position=[0.90, 0.3, 0.10, 0.10]
         
-
-        #self.setpoint_x =float(80 * np.cos(time.time()) / 10)#
-        #self.setpoint_y =float(80 * np.sin(time.time()) / 10)#
+        # Circle and aight figure setpoint.
+        #self.setpoint_x =float(80 * np.cos(time.time()) / 10)
+        #self.setpoint_y =float(80 * np.sin(time.time()) / 10)
         #self.setpoint_x = float(80 * np.sin(2*time.time())/10)
         #self.setpoint_y = float(80 * np.sin(time.time())/10)
 
@@ -68,35 +69,30 @@ class pidControllerNode(Node):
         pid_roll = self.compute_roll(self.y_pos)
 
         pid_output = pid_pitch, pid_roll
-        self.get_logger().info('pid_pitch: %f' % pid_output[0])
-        self.get_logger().info('pid_roll: %f' % pid_output[1])
         pub_msg = Float32MultiArray(data=pid_output)
         self.publisher_.publish(pub_msg)
         self.publisher_JS.publish(self.joint_state)
 
 
-    def compute_pitch(self, systemValue):
+    def compute_pitch(self, systemValue): #source https://github.com/KGKrohn/3-Dof_Regtek
         dt = 0.03
         error = self.setpoint_y - systemValue
         self.IntegralError += error * dt
         self.IntegralError = np.clip(self.IntegralError, a_min=-5, a_max=5)  # integral windup
         self.DerivativeError = (error - self.lastError) / dt
-        self.get_logger().info('IntegralError: %f' % self.IntegralError)
         
-
         output = (-self.Kp * error) + (-self.Ki * self.IntegralError) + (-self.Kd * self.DerivativeError)
     
         self.lastError = error
         return output
 
 
-    def compute_roll(self, systemValue):
+    def compute_roll(self, systemValue): #source https://github.com/KGKrohn/3-Dof_Regtek
         dt = 0.03
         error = self.setpoint_x - systemValue
         self.IntegralError_2 += error * dt
         self.IntegralError_2 = np.clip(self.IntegralError_2, a_min=-5, a_max=5)  # integral windup
         self.DerivativeError_2 = (error - self.lastError_2) / dt
-        self.get_logger().info('IntegralError_2: %f' % self.IntegralError_2)
 
         output = (-self.Kp * error) + (-self.Ki * self.IntegralError_2) + (-self.Kd * self.DerivativeError_2)
 

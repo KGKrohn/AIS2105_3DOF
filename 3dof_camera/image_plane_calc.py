@@ -52,6 +52,8 @@ class BallToCenti(Node):
         x_cord, y_cord = self.pixel_to_camera_coordinates(ball_x, ball_y)
         plate_x, plate_y = self.pixel_to_camera_coordinates(self.plate_center_x, self.plate_center_y)
 
+        # Convert camera coordinates to real-world coordinates (optional)
+
         # Publish converted coordinates
         ball_dist_cm_msg = Float32MultiArray()
         ball_dist_cm_msg.data = x_cord - plate_x, y_cord - plate_y

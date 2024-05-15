@@ -11,6 +11,7 @@ from ament_index_python import get_package_share_directory
 def generate_launch_description():
     ls = LaunchDescription()
 
+    # Running gazebo 
     other_file = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory('urdf_tutorial'),
@@ -58,13 +59,13 @@ def generate_launch_description():
         executable="pub_servo_ang",
         name="pub_to_arduino_node",
     )
-    ls.add_action(other_file)
+    #ls.add_action(other_file) gazebo
     ls.add_action(ball_tracking)
     ls.add_action(Vizu_ball_path)
     ls.add_action(Pixel_to_word)
     ls.add_action(pid_controller)
     ls.add_action(kinNode)
-    #ls.add_action(kin_testNode)
+    #ls.add_action(kin_testNode) test node for kinematic
     ls.add_action(Servo_angles)
     return ls
         
